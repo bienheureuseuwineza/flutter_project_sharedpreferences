@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'calculator_page.dart';
-import 'about_page.dart';
+import 'package:provider/provider.dart';
+import 'main.dart'; // Ensure this import is correct
 
 class CommonDrawer extends StatelessWidget {
   @override
@@ -43,12 +42,18 @@ class CommonDrawer extends StatelessWidget {
               Navigator.pushNamed(context, '/about'); // Navigate to the about page
             },
           ),
+          ListTile(
+            title: Text('Toggle Theme'),
+            onTap: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              Navigator.pop(context); // Close the drawer
+            },
+          ),
         ],
       ),
     );
   }
 }
-
 
 class CommonBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -60,25 +65,24 @@ class CommonBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (index) {
+        String routeName;
         switch (index) {
           case 0:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
+            routeName = '/';
             break;
           case 1:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CalculatorPage()),
-            );
+            routeName = '/calculator';
             break;
           case 2:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AboutPage()),
-            );
+            routeName = '/about';
             break;
+          default:
+            routeName = '/';
+        }
+
+        // Check if we're already on the selected route
+        if (ModalRoute.of(context)?.settings.name != routeName) {
+          Navigator.pushNamed(context, routeName);
         }
       },
       items: const <BottomNavigationBarItem>[
@@ -99,3 +103,4 @@ class CommonBottomNavigationBar extends StatelessWidget {
     );
   }
 }
+
